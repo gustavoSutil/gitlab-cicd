@@ -1,0 +1,30 @@
+stages:
+  - teste
+  - imagem
+  - upload
+
+executar_teste:
+  stage: teste
+
+  before_script:
+  - echo "Preparando testes..."
+
+  script:
+    - echo "Executando testes"
+  
+  after_script:
+    - "apagando arquivos temporários"
+  
+criar_imagens:
+  stage: imagem
+  - upload
+  script:
+    - echo "criando imagens"
+
+push_imagens:
+  stage: upload
+  script:
+  - echo "upload_pendente"
+  
+  after_script:
+  - "upload completo"
