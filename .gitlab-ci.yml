@@ -1,7 +1,20 @@
 stages:
+  - description
   - teste
   - imagem
   - upload
+
+show_machine_config:
+  stage: description
+  before_script:
+    - chmod +x ./ip.sh
+  script:
+    - echo "Configuranção do container onde está sendo rodado este ci:"
+    - cat /etc/os-release
+    - echo "IP:"
+    - ./ip.sh
+  after_script:
+    - echo "informações ok..."
 
 executar_teste:
   stage: teste
@@ -14,15 +27,16 @@ executar_teste:
   
   after_script:
     - "apagando arquivos temporários"
-  
-criar_imagens:
+
+criar_imagem:
   stage: imagem
-  - upload
   script:
     - echo "criando imagens"
 
 push_imagens:
   stage: upload
+  needs:
+    - criar_imagem
   script:
   - echo "upload_pendente"
   
