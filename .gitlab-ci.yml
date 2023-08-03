@@ -1,8 +1,18 @@
 stages:
+  - dependences
   - description
+  - build
   - teste
   - imagem
   - upload
+
+
+dependences:
+  stage: dependences
+  script:
+    - ls
+  after_script:
+    echo "Dependências instaladas"
 
 show_machine_config:
   stage: description
@@ -16,27 +26,43 @@ show_machine_config:
   after_script:
     - echo "informações ok..."
 
-executar_teste:
-  stage: teste
 
+
+build_app:
+  stage: build
+  needs:
+  - dependences
+  script:
+  - cat ./app/index.html
+
+executar_teste:
+  only:
+    - test
+  stage: teste
   before_script:
   - echo "Preparando testes..."
-
   script:
     - echo "Executando testes"
-  
   after_script:
     - "apagando arquivos temporários"
 
 criar_imagem:
+  needs:
+    - build_app
+  only:
+    - dev
+    - test
+    - main
   stage: imagem
   script:
     - echo "criando imagens"
 
 push_imagens:
-  stage: upload
   needs:
     - criar_imagem
+  only:
+    - main
+  stage: upload
   script:
   - echo "upload_pendente"
   
